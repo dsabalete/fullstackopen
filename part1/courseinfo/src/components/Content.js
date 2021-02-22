@@ -3,8 +3,8 @@ import { Part } from './Part.js'
 
 export const Content = (props) => (
     <div>
-        {props.parts.map((part, index) => (
-            <Part key={index} part={part} />
-        ))}
+        <Part part={props.part1} key='1' />
+        <Part part={props.part2} key='2' />
+        <Part part={props.part3} key='3' />
     </div>
 )
