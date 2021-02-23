@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom'
 const Statistics = ({ good, neutral, bad, all, avg, positive }) => {
     return (
         <div>
-            <h2>statistics</h2>
             good {good}
             <br />
             neutral {neutral}
@@ -50,6 +49,22 @@ const App = () => {
         setPositive(pos)
     }
 
+    const renderStatistics = () => {
+        if (all) {
+            return (
+                <Statistics
+                    good={good}
+                    neutral={neutral}
+                    bad={bad}
+                    all={all}
+                    avg={avg}
+                    positive={positive}
+                />
+            )
+        } else {
+            return 'No feedback given'
+        }
+    }
     return (
         <div>
             <h2>give feedback</h2>
@@ -60,14 +75,8 @@ const App = () => {
             </div>
             <br />
             <br />
-            <Statistics
-                good={good}
-                neutral={neutral}
-                bad={bad}
-                all={all}
-                avg={avg}
-                positive={positive}
-            />
+            <h2>statistics</h2>
+            {renderStatistics()}
         </div>
     )
 }
