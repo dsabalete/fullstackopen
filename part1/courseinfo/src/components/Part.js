@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const Part = (props) => (
-    <p key={props.key}>
+    <p>
         {props.part.name} {props.part.exercises}
     </p>
 )
