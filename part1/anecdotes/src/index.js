@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom'
 
 const App = (props) => {
     const [selected, setSelected] = useState(0)
-    const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
+    const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
     const showNextAnecdote = () => {
         const which = Math.floor(Math.random() * Math.floor(anecdotes.length))
         setSelected(which)
     }
     const vote = () => {
-        const copy = { ...votes }
+        const copy = [...votes]
         copy[selected] += 1
         setVotes(copy)
     }
