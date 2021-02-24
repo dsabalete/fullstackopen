@@ -13,6 +13,7 @@ const Course = ({ course }) => {
             <Header name={course.name} />
             <Content parts={course.parts} />
             <Total total={total} />
+            <hr />
         </div>
     )
 }
