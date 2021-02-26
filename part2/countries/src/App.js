@@ -30,13 +30,17 @@ const App = () => {
                 <h3>languages</h3>
                 <ul>
                     {country.languages.map((lang) => (
-                        <li>{lang.name}</li>
+                        <li key={lang['iso639_1']}>{lang.name}</li>
                     ))}
                 </ul>
             </div>
             <img src={country.flag} width='200' alt={`${country.name} flag`} />
         </div>
     )
+
+    const handleClick = (country) => {
+        setResult(new Array(country))
+    }
 
     return (
         <div>
@@ -53,7 +57,12 @@ const App = () => {
                     result.length <= 10 &&
                     result.length > 1 &&
                     result.map((country) => (
-                        <div key={country.name}>{country.name}</div>
+                        <div key={country.name}>
+                            {country.name}{' '}
+                            <button onClick={() => handleClick(country)}>
+                                show
+                            </button>
+                        </div>
                     ))}
             </div>
             <div>
