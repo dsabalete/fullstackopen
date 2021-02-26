@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import CountryInfo from './components/CountryInfo'
 
 const App = () => {
     const [countries, setCountries] = useState([])
@@ -21,26 +22,9 @@ const App = () => {
         setResult(result)
     }
 
-    const renderCountry = (country) => (
-        <div>
-            <h2>{country.name}</h2>
-            <div>capital {country.capital}</div>
-            <div>population {country.population}</div>
-            <div>
-                <h3>languages</h3>
-                <ul>
-                    {country.languages.map((lang) => (
-                        <li key={lang['iso639_1']}>{lang.name}</li>
-                    ))}
-                </ul>
-            </div>
-            <img src={country.flag} width='200' alt={`${country.name} flag`} />
-        </div>
-    )
+    const renderCountry = (country) => <CountryInfo country={country} />
 
-    const handleClick = (country) => {
-        setResult(new Array(country))
-    }
+    const handleClick = (country) => setResult(new Array(country))
 
     return (
         <div>
