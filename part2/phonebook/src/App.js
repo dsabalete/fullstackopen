@@ -36,11 +36,11 @@ const App = () => {
     }
 
     const handleChangeName = (e) => {
-        if (e.target.value) setNewName(e.target.value)
+        setNewName(e.target.value)
     }
 
     const handleChangeNumber = (e) => {
-        if (e.target.value) setNewNumber(e.target.value)
+        setNewNumber(e.target.value)
     }
 
     const handleFilter = (e) => {
