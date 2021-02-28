@@ -8,8 +8,8 @@
     "start": "node index.js"
   },
   "author": "David Sabalete",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.17.1"
-  }
+  },
+  "license": "MIT"
 }
