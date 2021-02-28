@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import personService from './services/persons'
+import { getAll, create, remove } from './services/persons'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import People from './components/People'
@@ -11,7 +11,7 @@ const App = () => {
     const [filterBy, setFilterBy] = useState('')
 
     useEffect(() => {
-        personService.getAll().then((persons) => {
+        getAll().then((persons) => {
             setPersons(persons)
         })
     }, [])
@@ -26,7 +26,7 @@ const App = () => {
                     name: newName,
                     number: newNumber
                 }
-                personService.create(personObj).then((person) => {
+                create(personObj).then((person) => {
                     setPersons(persons.concat(person))
                 })
             }
@@ -48,6 +48,20 @@ const App = () => {
         setFilterBy(newFilter.toLowerCase())
     }
 
+    const handleDeletePerson = (person) => {
+        const resp = window.confirm(`Delete ${person.name}?`)
+        if (resp) {
+            remove(person.id).then((response) => {
+                if (response.status === 200) {
+                    const updatePersons = persons.filter(
+                        (p) => p.id !== person.id
+                    )
+                    setPersons(updatePersons)
+                }
+            })
+        }
+    }
+
     return (
         <div>
             <h2>Phonebook</h2>
@@ -61,7 +75,11 @@ const App = () => {
                 newNumber={newNumber}
             />
             <h2>Numbers</h2>
-            <People persons={persons} filter={filterBy} />
+            <People
+                persons={persons}
+                filter={filterBy}
+                deletePerson={handleDeletePerson}
+            />
         </div>
     )
 }
