@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getAll, create, remove } from './services/persons'
+import { getAll, create, remove, update } from './services/persons'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import People from './components/People'
@@ -20,7 +20,24 @@ const App = () => {
         e.preventDefault()
         if (newName.length) {
             if (persons.map((person) => person.name).includes(newName)) {
-                alert(`${newName} is already added to the phonebook`)
+                const resp = window.confirm(
+                    `${newName} is already added to the phonebook, replace the old number with the new one?`
+                )
+                if (resp) {
+                    const prevPerson = persons.filter(
+                        (p) => p.name === newName
+                    )[0]
+
+                    const personObj = { ...prevPerson, number: newNumber }
+
+                    update(personObj.id, personObj).then((response) => {
+                        const updatedObj = response
+                        const updatedPersons = persons
+                            .filter((p) => p.id !== personObj.id)
+                            .concat(updatedObj)
+                        setPersons(updatedPersons)
+                    })
+                }
             } else {
                 const personObj = {
                     name: newName,
