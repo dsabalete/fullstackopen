@@ -4,6 +4,7 @@ import Filter from './components/Filter'
 import Form from './components/Form'
 import People from './components/People'
 import Notification from './components/Notification'
+import Error from './components/Error'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -11,12 +12,31 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filterBy, setFilterBy] = useState('')
     const [message, setMessage] = useState(null)
+    const [messageError, setMessageError] = useState(null)
 
     useEffect(() => {
-        getAll().then((persons) => {
-            setPersons(persons)
-        })
+        getAll()
+            .then((persons) => {
+                setPersons(persons)
+            })
+            .catch((error) => {
+                notifyError(`Error while getting contacts from Phonebook`)
+            })
     }, [])
+
+    const notify = (msg) => {
+        setMessage(msg)
+        setTimeout(() => {
+            setMessage(null)
+        }, 5000)
+    }
+
+    const notifyError = (error) => {
+        setMessageError(error)
+        setTimeout(() => {
+            setMessageError(null)
+        }, 5000)
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -32,32 +52,41 @@ const App = () => {
 
                     const personObj = { ...prevPerson, number: newNumber }
 
-                    update(personObj.id, personObj).then((response) => {
-                        const updatedObj = response
-                        const updatedPersons = persons
-                            .filter((p) => p.id !== personObj.id)
-                            .concat(updatedObj)
-                        setPersons(updatedPersons)
-                        setMessage(
-                            `${updatedObj.name}'s number has been updated`
-                        )
-                        setTimeout(() => {
-                            setMessage(null)
-                        }, 5000)
-                    })
+                    update(personObj.id, personObj)
+                        .then((response) => {
+                            const updatedObj = response
+                            const updatedPersons = persons
+                                .filter((p) => p.id !== personObj.id)
+                                .concat(updatedObj)
+                            setPersons(updatedPersons)
+                            notify(
+                                `${updatedObj.name}'s number has been updated`
+                            )
+                        })
+                        .catch((error) => {
+                            notifyError(
+                                `Information of ${personObj.name} has already removed from server`
+                            )
+                            setPersons(
+                                persons.filter((p) => p.id !== personObj.id)
+                            )
+                        })
                 }
             } else {
                 const personObj = {
                     name: newName,
                     number: newNumber
                 }
-                create(personObj).then((person) => {
-                    setPersons(persons.concat(person))
-                    setMessage(`${person.name} has been added to the phonebook`)
-                    setTimeout(() => {
-                        setMessage(null)
-                    }, 5000)
-                })
+                create(personObj)
+                    .then((person) => {
+                        setPersons(persons.concat(person))
+                        notify(`${person.name} has been added to the phonebook`)
+                    })
+                    .catch((error) => {
+                        notifyError(
+                            `Something went wrong while creating a new person`
+                        )
+                    })
             }
             setNewName('')
             setNewNumber('')
@@ -80,18 +109,21 @@ const App = () => {
     const handleDeletePerson = (person) => {
         const resp = window.confirm(`Delete ${person.name}?`)
         if (resp) {
-            remove(person.id).then((response) => {
-                if (response.status === 200) {
-                    const updatePersons = persons.filter(
-                        (p) => p.id !== person.id
+            remove(person.id)
+                .then((response) => {
+                    if (response.status === 200) {
+                        const updatePersons = persons.filter(
+                            (p) => p.id !== person.id
+                        )
+                        setPersons(updatePersons)
+                        notify(`${person.name} has been removed from phonebook`)
+                    }
+                })
+                .catch((error) => {
+                    notifyError(
+                        `Something went wrong while removing person in phonebook`
                     )
-                    setPersons(updatePersons)
-                    setMessage(`${person.name} has been removed from phonebook`)
-                    setTimeout(() => {
-                        setMessage(null)
-                    }, 5000)
-                }
-            })
+                })
         }
     }
 
@@ -100,6 +132,7 @@ const App = () => {
             <h2>Phonebook</h2>
 
             <Notification message={message} />
+            <Error message={messageError} />
 
             <Filter handle={handleFilter} filter={filterBy} />
 
