@@ -3,12 +3,14 @@ import { getAll, create, remove, update } from './services/persons'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import People from './components/People'
+import Notification from './components/Notification'
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filterBy, setFilterBy] = useState('')
+    const [message, setMessage] = useState(null)
 
     useEffect(() => {
         getAll().then((persons) => {
@@ -36,6 +38,12 @@ const App = () => {
                             .filter((p) => p.id !== personObj.id)
                             .concat(updatedObj)
                         setPersons(updatedPersons)
+                        setMessage(
+                            `${updatedObj.name}'s number has been updated`
+                        )
+                        setTimeout(() => {
+                            setMessage(null)
+                        }, 5000)
                     })
                 }
             } else {
@@ -45,6 +53,10 @@ const App = () => {
                 }
                 create(personObj).then((person) => {
                     setPersons(persons.concat(person))
+                    setMessage(`${person.name} has been added to the phonebook`)
+                    setTimeout(() => {
+                        setMessage(null)
+                    }, 5000)
                 })
             }
             setNewName('')
@@ -74,6 +86,10 @@ const App = () => {
                         (p) => p.id !== person.id
                     )
                     setPersons(updatePersons)
+                    setMessage(`${person.name} has been removed from phonebook`)
+                    setTimeout(() => {
+                        setMessage(null)
+                    }, 5000)
                 }
             })
         }
@@ -82,8 +98,13 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+
+            <Notification message={message} />
+
             <Filter handle={handleFilter} filter={filterBy} />
+
             <h3>add a new</h3>
+
             <Form
                 handleSubmit={handleSubmit}
                 handleChangeName={handleChangeName}
@@ -91,7 +112,9 @@ const App = () => {
                 newName={newName}
                 newNumber={newNumber}
             />
+
             <h2>Numbers</h2>
+
             <People
                 persons={persons}
                 filter={filterBy}
