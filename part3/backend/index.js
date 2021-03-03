@@ -1,6 +1,8 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 const requestLogger = (request, response, next) => {
@@ -83,6 +85,19 @@ app.delete('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     notes = notes.filter((note) => note.id !== id)
 
+    response.status(204).end()
+})
+
+app.put('/api/notes/:id', (request, response) => {
+    const body = request.body
+    const id = Number(request.params.id)
+    const updatedNote = {
+        content: body.content,
+        important: body.important,
+        date: new Date().toISOString(),
+        id
+    }
+    notes = notes.map((note) => (note.id !== id ? note : updatedNote))
     response.status(204).end()
 })
 
