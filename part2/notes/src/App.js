@@ -8,7 +8,7 @@ const App = () => {
     const [notes, setNotes] = useState([])
     const [newNote, setNewNote] = useState('a new note...')
     const [showAll, setShowAll] = useState(true)
-    const [errorMessage, setErrorMessage] = useState('some error happened...')
+    const [errorMessage, setErrorMessage] = useState(null)
 
     useEffect(() => {
         getAll().then((response) => {
@@ -21,12 +21,13 @@ const App = () => {
         const changedNote = { ...note, important: !note.important }
 
         update(id, changedNote)
-            .then((returnedNote) => {
+            .then(() => {
                 setNotes(
-                    notes.map((note) => (note.id !== id ? note : returnedNote))
+                    notes.map((note) => (note.id !== id ? note : changedNote))
                 )
             })
             .catch((error) => {
+                console.log(error)
                 setErrorMessage(
                     `Note '${note.content}' was already removed from server`
                 )
