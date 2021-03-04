@@ -111,7 +111,7 @@ const App = () => {
         if (resp) {
             remove(person.id)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === 204) {
                         const updatePersons = persons.filter(
                             (p) => p.id !== person.id
                         )
