@@ -1,4 +1,5 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
 
@@ -16,33 +17,64 @@ const requestLogger = (request, response, next) => {
 
 app.use(requestLogger)
 
-let notes = [
-    {
-        id: 1,
-        content: 'HTML is easy',
-        date: '2019-05-30T17:30:31.098Z',
-        important: true
-    },
-    {
-        id: 2,
-        content: 'Browser can execute only Javascript',
-        date: '2019-05-30T18:39:34.091Z',
-        important: false
-    },
-    {
-        id: 3,
-        content: 'GET and POST are the most important methods of HTTP protocol',
-        date: '2019-05-30T19:20:14.298Z',
-        important: true
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+require('dotenv').config()
+
+const password = process.env.MONGO_PASSWORD
+const url = `mongodb+srv://fullstack:${password}@cluster0.9aajn.mongodb.net/note-app?retryWrites=true&w=majority`
+
+mongoose.connect(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+})
+
+const noteSchema = new mongoose.Schema({
+    content: String,
+    date: Date,
+    important: Boolean
+})
+
+noteSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
     }
-]
+})
+
+const Note = mongoose.model('Note', noteSchema)
+
+// let notes = [
+//     {
+//         id: 1,
+//         content: 'HTML is easy',
+//         date: '2019-05-30T17:30:31.098Z',
+//         important: true
+//     },
+//     {
+//         id: 2,
+//         content: 'Browser can execute only Javascript',
+//         date: '2019-05-30T18:39:34.091Z',
+//         important: false
+//     },
+//     {
+//         id: 3,
+//         content: 'GET and POST are the most important methods of HTTP protocol',
+//         date: '2019-05-30T19:20:14.298Z',
+//         important: true
+//     }
+// ]
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/notes', (request, response) => {
-    response.json(notes)
+    Note.find({}).then((notes) => {
+        response.json(notes)
+    })
 })
 
 const generateId = () => {
@@ -109,6 +141,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
+const HOST = process.env.HOST || 'http://localhost'
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on ${HOST}:${PORT}`)
 })
