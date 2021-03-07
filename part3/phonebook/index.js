@@ -34,7 +34,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     if (!body.name || !body.number) {
@@ -43,33 +43,25 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    // Person.findOne({ name: body.name }, function (err, person) {
-    //     if (err) console.error(err)
-    //     console.log(person)
-    // })
-
-    // if (persons.some((person) => person.name === body.name)) {
-    //     return response.status(400).json({
-    //         error: 'name must be unique'
-    //     })
-    // }
-
     const person = new Person({
         name: body.name,
         number: body.number
     })
 
-    person.save().then((newPerson) => {
-        response.json(newPerson.toJSON())
-    })
+    person
+        .save()
+        .then((newPerson) => {
+            response.json(newPerson.toJSON())
+        })
+        .catch((error) => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then((person) => {
             response.json(person.toJSON())
         })
-        .catch((error) => response.status(404).end())
+        .catch((error) => next(error))
 })
 
 // app.get('/info', (request, response) => {
@@ -77,6 +69,21 @@ app.get('/api/persons/:id', (request, response) => {
 //         `Phonebook has info for ${persons.length}<br/><br/>${new Date()}`
 //     )
 // })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const { body } = request
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+        .then((updatedPerson) => {
+            response.json(updatedPerson.toJSON())
+        })
+        .catch((error) => next(error))
+})
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
