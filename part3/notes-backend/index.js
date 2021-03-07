@@ -12,26 +12,26 @@ app.use(bodyParser.json())
 
 app.use(express.static('build'))
 
-let notes = [
-    {
-        id: 1,
-        content: 'HTML is easy',
-        date: '2020-01-10T17:30:31.098Z',
-        important: true
-    },
-    {
-        id: 2,
-        content: 'Browser can execute only Javascript',
-        date: '2020-01-10T18:39:34.091Z',
-        important: false
-    },
-    {
-        id: 3,
-        content: 'GET and POST are the most important methods of HTTP protocol',
-        date: '2020-01-10T19:20:14.298Z',
-        important: true
-    }
-]
+// let notes = [
+//     {
+//         id: 1,
+//         content: 'HTML is easy',
+//         date: '2020-01-10T17:30:31.098Z',
+//         important: true
+//     },
+//     {
+//         id: 2,
+//         content: 'Browser can execute only Javascript',
+//         date: '2020-01-10T18:39:34.091Z',
+//         important: false
+//     },
+//     {
+//         id: 3,
+//         content: 'GET and POST are the most important methods of HTTP protocol',
+//         date: '2020-01-10T19:20:14.298Z',
+//         important: true
+//     }
+// ]
 
 app.get('/api/notes', (request, response) => {
     Note.find({}).then((notes) => {
@@ -57,7 +57,7 @@ app.post('/api/notes', (request, response) => {
     })
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
     Note.findById(request.params.id)
         .then((note) => {
             if (note) {
@@ -66,11 +66,21 @@ app.get('/api/notes/:id', (request, response) => {
                 response.status(404).end()
             }
         })
-        .catch((error) => {
-            console.log(error)
-            response.status(400).send({ error: 'malformatted id' })
-        })
+        .catch((error) => next(error))
 })
+
+const errorHandler = (error, request, response, next) => {
+    console.error('💢')
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 app.put('/api/notes/:id', (request, response) => {
     Note.replaceOne(
