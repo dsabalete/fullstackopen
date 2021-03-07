@@ -64,11 +64,13 @@ app.get('/api/persons/:id', (request, response, next) => {
         .catch((error) => next(error))
 })
 
-// app.get('/info', (request, response) => {
-//     response.send(
-//         `Phonebook has info for ${persons.length}<br/><br/>${new Date()}`
-//     )
-// })
+app.get('/info', (request, response) => {
+    Person.find({}).then((persons) => {
+        response.send(
+            `Phonebook has info for ${persons.length}<br/><br/>${new Date()}`
+        )
+    })
+})
 
 app.put('/api/persons/:id', (request, response, next) => {
     const { body } = request
