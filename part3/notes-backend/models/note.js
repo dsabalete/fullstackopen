@@ -18,11 +18,20 @@ mongoose
         console.log('error connecting to MongoDB:', error.message)
     })
 
-const noteSchema = new mongoose.Schema({
-    content: String,
-    date: Date,
-    important: Boolean
-})
+const noteSchema = new mongoose.Schema(
+    {
+        content: String,
+        date: Date,
+        important: Boolean
+    },
+    {
+        writeConcern: {
+            w: 'majority',
+            j: true,
+            wtimeout: 1000
+        }
+    }
+)
 
 noteSchema.set('toJSON', {
     transform: (document, returnedObject) => {
