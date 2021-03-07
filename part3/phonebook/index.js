@@ -66,15 +66,6 @@ app.get('/api/persons/:id', (request, response) => {
             response.json(person.toJSON())
         })
         .catch((error) => response.status(404).end())
-
-    // const id = Number(request.params.id)
-    // const person = persons.find((person) => person.id === id)
-
-    // if (person) {
-    //     response.json(person)
-    // } else {
-    //     response.status(404).end()
-    // }
 })
 
 // app.get('/info', (request, response) => {
@@ -86,13 +77,12 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter((person) => person.id !== id)
+    Person.deleteOne({ id: request.params.id }, function (resp) {
+        console.log(resp)
+    })
 
     response.status(204).end()
 })
-
-const generateId = () => {
-    return Math.floor(Math.random() * Math.floor(10 ** 10))
-}
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
@@ -114,14 +104,14 @@ app.post('/api/persons', (request, response) => {
     //     })
     // }
 
-    // const person = new Person({
-    //     name: body.name,
-    //     number: body.number
-    // })
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
 
-    // persons = persons.concat(person)
-
-    // response.json(person)
+    person.save().then((newPerson) => {
+        response.json(newPerson.toJSON())
+    })
 })
 
 const PORT = process.env.PORT || 3001
