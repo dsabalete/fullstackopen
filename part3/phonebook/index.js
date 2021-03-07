@@ -1,8 +1,10 @@
 const express = require('express')
+const app = express()
+require('dotenv').config()
+const Person = require('./models/person')
+
 const cors = require('cors')
 const morgan = require('morgan')
-
-const app = express()
 
 morgan.token('body', (req, res) => {
     if (req.method === 'POST') return JSON.stringify(req.body)
@@ -22,8 +24,11 @@ app.use(
         ].join(' ')
     })
 )
+
 app.use(cors())
+
 app.use(express.json())
+
 app.use(express.static('build'))
 
 let persons = [
@@ -50,25 +55,33 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then((persons) => {
+        response.json(persons.map((person) => person.toJSON()))
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find((person) => person.id === id)
+    Person.findById(request.params.id)
+        .then((person) => {
+            response.json(person.toJSON())
+        })
+        .catch((error) => response.status(404).end())
 
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    // const id = Number(request.params.id)
+    // const person = persons.find((person) => person.id === id)
+
+    // if (person) {
+    //     response.json(person)
+    // } else {
+    //     response.status(404).end()
+    // }
 })
 
-app.get('/info', (request, response) => {
-    response.send(
-        `Phonebook has info for ${persons.length}<br/><br/>${new Date()}`
-    )
-})
+// app.get('/info', (request, response) => {
+//     response.send(
+//         `Phonebook has info for ${persons.length}<br/><br/>${new Date()}`
+//     )
+// })
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
@@ -90,21 +103,25 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    if (persons.some((person) => person.name === body.name)) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
+    // Person.findOne({ name: body.name }, function (err, person) {
+    //     if (err) console.error(err)
+    //     console.log(person)
+    // })
 
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: generateId()
-    }
+    // if (persons.some((person) => person.name === body.name)) {
+    //     return response.status(400).json({
+    //         error: 'name must be unique'
+    //     })
+    // }
 
-    persons = persons.concat(person)
+    // const person = new Person({
+    //     name: body.name,
+    //     number: body.number
+    // })
 
-    response.json(person)
+    // persons = persons.concat(person)
+
+    // response.json(person)
 })
 
 const PORT = process.env.PORT || 3001
