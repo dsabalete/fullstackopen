@@ -50,8 +50,9 @@ app.post('/api/persons', (request, response, next) => {
 
     person
         .save()
-        .then((newPerson) => {
-            response.json(newPerson.toJSON())
+        .then((savedPerson) => savedPerson.toJSON())
+        .then((savedAndFormattedPerson) => {
+            response.json(savedAndFormattedPerson)
         })
         .catch((error) => next(error))
 })
@@ -97,6 +98,8 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
     next(error)
 }
