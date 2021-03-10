@@ -83,7 +83,7 @@ const App = () => {
                         notify(`${person.name} has been added to the phonebook`)
                     })
                     .catch((error) => {
-                        notifyError(error.response.data)
+                        notifyError(error.response.data.error)
                     })
             }
             setNewName('')

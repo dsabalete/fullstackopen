@@ -7,9 +7,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Persons backend server",
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceRoot}/part3/phonebook/index.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Note backend server",
             "skipFiles": ["<node_internals>/**"],
-            "program": "${workspaceRoot}/part3/backend/index.js"
+            "program": "${workspaceRoot}/part3/notes-backend/index.js"
         },
         {
             "type": "pwa-node",
