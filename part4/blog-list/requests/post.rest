@@ -1,0 +1,39 @@
+POST http://localhost:3001/api/blogs
+content-type: application/json
+
+{
+    "title": "David's blog",
+    "author": "David Sabalete",
+    "url": "https://blog.davidsabalete.com/",
+    "likes": 5
+}
+###
+POST http://localhost:3001/api/blogs
+content-type: application/json
+
+{
+    "title": "Welcome to my blog",
+    "author": "Debbie O'Brien",
+    "url": "https://debbie.codes/blog",
+    "likes": 4
+}
+###
+POST http://localhost:3001/api/blogs
+content-type: application/json
+
+{
+    "title": "Marina Aisa UX engineer",
+    "author": "Marina Aisa",
+    "url": "https://marinaaisa.com/blog",
+    "likes": 3
+}
+###
+POST http://localhost:3001/api/blogs
+content-type: application/json
+
+{
+    "title": "Blog JakeArchibald.com",
+    "author": "Jake Archibald",
+    "url": "https://jakearchibald.com/",
+    "likes": 10
+}
