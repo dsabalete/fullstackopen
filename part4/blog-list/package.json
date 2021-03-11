@@ -10,7 +10,7 @@
     "deploy": "git push heroku HEAD:master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
-    "test": "jest --verbose --watchAll",
+    "test": "jest --verbose",
     "lint": "eslint ."
   },
   "author": "David Sabalete",
