@@ -6,8 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build:ui": "rm -rf build && cd ../../part2/notes && npm run build --prod && cp -r build ../../part4/notes-backend",
     "deploy": "git push heroku HEAD:master",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "logs:prod": "heroku logs --tail",
+    "test": "jest --verbose --watchAll",
     "lint": "eslint ."
   },
   "author": "David Sabalete",
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "eslint": "^7.21.0",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.7"
   }
 }
