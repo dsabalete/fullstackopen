@@ -89,8 +89,8 @@ describe('total likes', () => {
   })
 })
 
-describe('favorite Blog', () => {
-  test('return the most voted blog', () => {
+describe('favorite blog', () => {
+  test('returns the most voted blog', () => {
     const result = listHelper.favoriteBlog(blogs)
     const mostVotedBlog = {
       _id: '5a422b3a1b54a676234d17f9',
@@ -101,5 +101,13 @@ describe('favorite Blog', () => {
       __v: 0
     }
     expect(result).toEqual(mostVotedBlog)
+  })
+})
+
+describe('most blogs', () => {
+  test('returns name and number of blogs of the most prolific author', () => {
+    const result = listHelper.mostBlogs(blogs)
+    const authorAndNumber = { author: 'Robert C. Martin', blogs: 3 }
+    expect(result).toEqual(authorAndNumber)
   })
 })
