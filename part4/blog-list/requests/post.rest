@@ -1,14 +1,13 @@
-POST http://localhost:3001/api/blogs
+POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
     "title": "David's blog",
     "author": "David Sabalete",
-    "url": "https://blog.davidsabalete.com/",
-    "likes": 5
+    "url": "https://blog.davidsabalete.com/"
 }
 ###
-POST http://localhost:3001/api/blogs
+POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
@@ -18,7 +17,7 @@ content-type: application/json
     "likes": 4
 }
 ###
-POST http://localhost:3001/api/blogs
+POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
@@ -28,7 +27,7 @@ content-type: application/json
     "likes": 3
 }
 ###
-POST http://localhost:3001/api/blogs
+POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {

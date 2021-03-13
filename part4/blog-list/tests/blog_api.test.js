@@ -55,6 +55,23 @@ describe('Blog API', () => {
     const titles = blogsAtEnd.map((n) => n.title)
     expect(titles).toContain('My Blog')
   })
+
+  test('if the "likes" property is missing from the request, it will default to the value 0', async () => {
+    const newBlogWithoutLikes = {
+      title: 'My Blog',
+      author: 'David Sabalete',
+      url: 'https://blog.davidsabalete.com'
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlogWithoutLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toBeDefined()
+    expect(response.body.likes).toBe(0)
+  })
 })
 
 afterAll(() => {
