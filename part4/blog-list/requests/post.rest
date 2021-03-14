@@ -2,9 +2,7 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "David's blog",
     "author": "David Sabalete",
-    "url": "https://blog.davidsabalete.com/"
 }
 ###
 POST http://localhost:3003/api/blogs
