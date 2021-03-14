@@ -8,14 +8,10 @@ const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog)
-    await blogObject.save()
-  }
+  await Blog.insertMany(helper.initialBlogs)
 })
 
-describe('Blog API', () => {
+describe('when there are initially some blogs saved', () => {
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -34,7 +30,9 @@ describe('Blog API', () => {
 
     expect(response.body[0].id).toBeDefined()
   })
+})
 
+describe('addition of a blog', () => {
   test('an HTTP POST request to the API successfully creates a new blog post', async () => {
     const newBlog = {
       title: 'My Blog',
@@ -100,6 +98,52 @@ describe('deletion of a blog', () => {
     const titles = blogsAtEnd.map((r) => r.title)
 
     expect(titles).not.toContain(blogToDelete.title)
+  })
+})
+
+describe('modification of a specific blog', () => {
+  test('succeeds with valid data', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    blogToUpdate.likes++
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`, blogToUpdate)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('fails with a non existing id', async () => {
+    const id = helper.nonExistingId()
+
+    const blogToUpdate = {
+      id,
+      title: 'Goldfinger',
+      author: 'Dr. No',
+      url: 'Moonraker island',
+      likes: 10
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`, blogToUpdate)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('fails with invalid data', async () => {
+    const blogToUpdate = {
+      id: 111112222233333,
+      title: 'Goldfinger',
+      author: 'Dr. No',
+      url: 'Moonraker island',
+      likes: 10
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`, blogToUpdate)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
   })
 })
 
