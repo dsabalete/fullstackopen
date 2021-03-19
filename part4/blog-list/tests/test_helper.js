@@ -20,12 +20,12 @@ const initialUsers = [
   {
     username: 'root',
     name: 'da Root',
-    password: '12345678'
+    passwordHash: '12345678'
   },
   {
     username: 'admin',
     name: 'Administrator',
-    password: 'supersecret'
+    passwordHash: 'supersecret'
   }
 ]
 
