@@ -34,3 +34,21 @@ content-type: application/json
     "url": "https://jakearchibald.com/",
     "likes": 10
 }
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "The Master",
+    "password": "m1st3ry"
+}
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "pepito",
+    "name": "Pepe",
+    "password": "s3cr3t0"
+}
