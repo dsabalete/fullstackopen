@@ -28,6 +28,4 @@ userSchema.set('toJSON', {
   }
 })
 
-const User = model('User', userSchema)
-
-module.exports = User
+module.exports = model('User', userSchema)
