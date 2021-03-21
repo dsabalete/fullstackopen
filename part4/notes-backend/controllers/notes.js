@@ -18,7 +18,7 @@ const getTokenFrom = (request) => {
 }
 
 notesRouter.post('/', async (request, response) => {
-  const body = request.body
+  const { body } = request
 
   const token = getTokenFrom(request)
   const decodedToken = jwt.verify(token, process.env.SECRET)

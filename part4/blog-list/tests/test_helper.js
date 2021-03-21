@@ -1,18 +1,19 @@
 const Blog = require('../models/blog')
-const User = require('../models/user')
 
 const initialBlogs = [
   {
     title: 'Nuxt Blog',
     author: 'Sebastien Chopin',
     url: 'https://nuxtjs.org/blog/',
-    likes: 5
+    likes: 5,
+    user: '60552998d24ff045405cfc10'
   },
   {
     title: 'Evan You Blog',
     author: 'Evan You',
     url: 'https://blog.evanyou.me/',
-    likes: 3
+    likes: 3,
+    user: '605529ecd24ff045405cfc11'
   }
 ]
 
@@ -23,8 +24,8 @@ const initialUsers = [
     passwordHash: '$2b$10$WZzJ/9m1wX7CIif80BIR1u91EtJ/eT4JMhKZi6wi/qkl1E2hzp5pC'
   },
   {
-    username: 'admin',
-    name: 'Administrator',
+    username: 'pepito',
+    name: 'Pepe',
     passwordHash: '$2b$10$ZpuJ24rvE/wCZwoIGbZmXuVlmT1NW6RJUNOX1upJMKfh90G/Tg7le'
   }
 ]
