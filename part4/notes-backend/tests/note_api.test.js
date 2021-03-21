@@ -5,8 +5,11 @@ const app = require('../app')
 const api = supertest(app)
 
 const Note = require('../models/note')
+const User = require('../models/user')
 
 beforeEach(async () => {
+  await User.deleteMany({})
+  await User.insertMany(helper.initialUsers)
   await Note.deleteMany({})
   await Note.insertMany(helper.initialNotes)
 })
@@ -53,8 +56,6 @@ describe('viewing a specific note', () => {
   test('fails with statuscode 404 if note does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
-    console.log(validNonexistingId)
-
     await api.get(`/api/notes/${validNonexistingId}`).expect(404)
   })
 
@@ -95,6 +96,50 @@ describe('addition of a new note', () => {
     const notesAtEnd = await helper.notesInDb()
 
     expect(notesAtEnd).toHaveLength(helper.initialNotes.length)
+  })
+
+  test('fails with status code 401 for not authorized user', async () => {
+    const newNote = {
+      content: 'async/await simplifies making async calls',
+      important: true
+    }
+
+    await api
+      .post('/api/notes')
+      .send(newNote)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('login success', async () => {
+    const userPass = {
+      username: 'pepito',
+      password: 'secret'
+    }
+    await api
+      .post('/api/login')
+      .send(userPass)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('succeed for authorized user', async () => {
+    const userPass = {
+      username: '',
+      password: ''
+    }
+    await api.post('/api/login').send()
+
+    const newNote = {
+      content: 'async/await simplifies making async calls',
+      important: true
+    }
+
+    await api
+      .post('/api/notes')
+      .send(newNote)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
 })
 
