@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
@@ -18,29 +18,21 @@ usersRouter.post('/', async (request, response) => {
   const savedUser = await user.save()
 
   response.json(savedUser)
+})
 
-  //   const user = await User.findOne({ username })
+usersRouter.get('/', async (request, response) => {
+  const users = await User.find({}).populate('notes', { content: 1, date: 1 })
 
-  //   const passwordCorrect =
-  //     user === null ? false : await bcrypt.compare(password, user.passwordHash)
+  response.json(users.map((u) => u.toJSON()))
+})
 
-  //   if (!(user && passwordCorrect)) {
-  //     return response.status(401).json({
-  //       error: 'invalid username or password'
-  //     })
-  //   }
-
-  //   const userForToken = {
-  //     username: user.username,
-  //     id: user._id
-  //   }
-
-  //   // token expires in 60*60 seconds, that is, in one hour
-  //   const token = jwt.sign(userForToken, process.env.SECRET, {
-  //     expiresIn: 60 * 60
-  //   })
-
-  //   response.status(200).send({ token, username: user.username, name: user.name })
+usersRouter.get('/:id', async (request, response) => {
+  const user = await User.findById(request.params.id)
+  if (user) {
+    response.json(user.toJSON())
+  } else {
+    respose.status(404).end()
+  }
 })
 
 module.exports = usersRouter
