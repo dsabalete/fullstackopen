@@ -31,7 +31,7 @@ notesRouter.post('/', async (request, response) => {
 
   const note = new Note({
     content: body.content,
-    important: body.important || false,
+    important: body.important === undefined ? false : body.important,
     date: new Date(),
     user: user._id
   })
@@ -40,13 +40,13 @@ notesRouter.post('/', async (request, response) => {
   user.notes = user.notes.concat(savedNote._id)
   await user.save()
 
-  response.json(savedNote)
+  response.json(savedNote.toJSON())
 })
 
 notesRouter.get('/:id', async (request, response) => {
   const note = await Note.findById(request.params.id)
   if (note) {
-    response.json(note)
+    response.json(note.toJSON())
   } else {
     response.status(404).end()
   }
@@ -57,18 +57,19 @@ notesRouter.delete('/:id', async (request, response) => {
   response.status(204).end()
 })
 
-notesRouter.put('/:id', async (request, response) => {
-  const body = request.body
+notesRouter.put('/:id', async (request, response, next) => {
+  const { body } = request
 
   const note = {
     content: body.content,
     important: body.important
   }
 
-  const updatedNote = await Note.findByIdAndUpdate(request.params.id, note, {
-    new: true
-  })
-  response.json(updatedNote)
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updatedNote) => {
+      response.json(updatedNote.toJSON())
+    })
+    .catch((error) => next(error))
 })
 
 module.exports = notesRouter
