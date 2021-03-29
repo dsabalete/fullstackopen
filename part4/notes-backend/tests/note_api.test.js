@@ -3,7 +3,9 @@ const supertest = require('supertest')
 const { initialNotes, notesInDb, nonExistingId } = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const bcrypt = require('bcrypt')
 const Note = require('../models/note')
+const User = require('../models/user')
 
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
@@ -62,10 +64,22 @@ describe('viewing a specific note', () => {
 })
 
 describe.only('addition of a new note', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
+  })
+
   test('succeeds with valid data', async () => {
+    const user = await User.findOne({ username: 'root' })
+
     const newNote = {
       content: 'async/await simplifies making async calls',
-      important: true
+      important: true,
+      userId: user.id
     }
 
     await api
