@@ -4,5 +4,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
 
 {
     "content": "Single Page Apps use token authentication",
-    "important": true
+    "important": true,
+    "userId": "60586a74ee4aa713329f6353"
+}
+###
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
+
+{
+    "content": "User id of the note creator is at the start sent along the request",
+    "important": true,
+    "userId": "60586a74ee4aa713329f6353"
 }

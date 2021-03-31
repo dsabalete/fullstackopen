@@ -7,3 +7,13 @@ Content-Type: application/json
     "name": "Superuser",
     "password": "sekret"
 }
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
+
+{
+    "username": "mluukkai",
+    "name": "Matti Lukkainen",
+    "password": "opensesame"
+}
