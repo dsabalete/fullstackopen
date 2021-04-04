@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwNTg2YTc0ZWU0YWE3MTMzMjlmNjM1MyIsImlhdCI6MTYxNzU2MjE4NX0.W5miUhmjR7o2Og56j1CzjBqOq8MWsVeVvfEMRp5vF-o
 
 {
     "content": "Single Page Apps use token authentication",
@@ -10,7 +10,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
 ###
 POST http://localhost:3001/api/notes
 Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwNTg2YTc0ZWU0YWE3MTMzMjlmNjM1MyIsImlhdCI6MTYxNzU2MjE4NX0.W5miUhmjR7o2Og56j1CzjBqOq8MWsVeVvfEMRp5vF-o
 
 {
     "content": "User id of the note creator is at the start sent along the request",
