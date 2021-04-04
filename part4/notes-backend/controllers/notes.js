@@ -6,7 +6,8 @@ const User = require('../models/user')
 notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({}).populate('user', { username: 1, name: 1 })
 
-  response.json(notes.map((note) => note.toJSON()))
+  // response.json(notes.map((note) => note.toJSON()))
+  response.json(notes)
 })
 
 const getTokenFrom = (request) => {
@@ -19,17 +20,12 @@ const getTokenFrom = (request) => {
 
 notesRouter.post('/', async (request, response) => {
   const { body } = request
-
-  // const token = getTokenFrom(request)
-  // const decodedToken = jwt.verify(token, process.env.SECRET)
-
-  // if (!token || !decodedToken.id) {
-  //   return response.status(401).json({ error: 'token missing or invalid' })
-  // }
-
-  // const user = await User.findById(decodedToken.id)
-
-  const user = await User.findById(body.userId)
+  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
 
   const note = new Note({
     content: body.content,
