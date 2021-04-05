@@ -63,27 +63,38 @@ describe('viewing a specific note', () => {
   })
 })
 
-describe.only('addition of a new note', () => {
+describe('addition of a new note', () => {
+  let token = null
+
   beforeEach(async () => {
+    await Note.deleteMany({})
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
     const user = new User({ username: 'root', passwordHash })
 
     await user.save()
+
+    const loginPass = {
+      username: 'root',
+      password: 'sekret'
+    }
+    const response = await api.post('/api/login').send(loginPass)
+    token = response.body.token
+
+    await Note.insertMany(initialNotes)
   })
 
   test('succeeds with valid data', async () => {
-    const user = await User.findOne({ username: 'root' })
-
     const newNote = {
-      content: 'async/await simplifies making async calls',
+      content: 'new note to be added',
       important: true,
-      userId: user.id
+      userId: '60586a74ee4aa713329f6353'
     }
 
     await api
       .post('/api/notes')
+      .set('Authorization', 'Bearer ' + token)
       .send(newNote)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -92,15 +103,19 @@ describe.only('addition of a new note', () => {
     expect(notesAtEnd).toHaveLength(initialNotes.length + 1)
 
     const contents = notesAtEnd.map((n) => n.content)
-    expect(contents).toContain('async/await simplifies making async calls')
+    expect(contents).toContain('new note to be added')
   })
 
-  xtest('fails with status code 400 if data invaild', async () => {
+  test('fails with status code 400 if data invaild', async () => {
     const newNote = {
       important: true
     }
 
-    await api.post('/api/notes').send(newNote).expect(400)
+    const response = await api
+      .post('/api/notes')
+      .set('Authorization', 'Bearer ' + token)
+      .send(newNote)
+      .expect(400)
 
     const notesAtEnd = await notesInDb()
 
@@ -117,25 +132,6 @@ describe.only('addition of a new note', () => {
       .post('/api/notes')
       .send(newNote)
       .expect(401)
-      .expect('Content-Type', /application\/json/)
-  })
-
-  xtest('succeed for authorized user', async () => {
-    const userPass = {
-      username: '',
-      password: ''
-    }
-    await api.post('/api/login').send()
-
-    const newNote = {
-      content: 'async/await simplifies making async calls',
-      important: true
-    }
-
-    await api
-      .post('/api/notes')
-      .send(newNote)
-      .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 })

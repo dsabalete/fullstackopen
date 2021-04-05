@@ -17,10 +17,13 @@ describe('when there is initially one user at db', () => {
   })
 
   test('login success', async () => {
+    let token = null
+
     const userPass = {
       username: 'root',
       password: 'sekret'
     }
+
     await api
       .post('/api/login')
       .send(userPass)
