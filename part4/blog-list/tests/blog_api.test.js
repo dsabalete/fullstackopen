@@ -1,10 +1,11 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const { initialBlogs, blogsInDb, nonExistingId } = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
-const { initialBlogs, blogsInDb, nonExistingId } = require('./test_helper')
-
+const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -33,6 +34,27 @@ describe('when there are initially some blogs saved', () => {
 })
 
 describe('addition of a blog', () => {
+  let token = null
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
+
+    const loginPass = {
+      username: 'root',
+      password: 'sekret'
+    }
+    const response = await api.post('/api/login').send(loginPass)
+    token = response.body.token
+
+    await Blog.insertMany(initialBlogs)
+  })
+
   test('an HTTP POST request to the API successfully creates a new blog post', async () => {
     const newBlog = {
       title: 'My Blog',
@@ -43,6 +65,7 @@ describe('addition of a blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + token)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -63,6 +86,7 @@ describe('addition of a blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + token)
       .send(newBlogWithoutLikes)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -77,7 +101,11 @@ describe('addition of a blog', () => {
       likes: 0
     }
 
-    await api.post('/api/blogs').send(blogIncomplete).expect(400)
+    await api
+      .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + token)
+      .send(blogIncomplete)
+      .expect(400)
 
     const blogsAtEnd = await blogsInDb()
     expect(blogsAtEnd).toHaveLength(initialBlogs.length)
