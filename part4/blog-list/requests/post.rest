@@ -12,7 +12,8 @@ content-type: application/json
     "title": "Welcome to my blog",
     "author": "Debbie O'Brien",
     "url": "https://debbie.codes/blog",
-    "likes": 4
+    "likes": 4,
+    "user": "606b5fecec60811d40e7ecab"
 }
 ###
 POST http://localhost:3003/api/blogs
@@ -22,7 +23,8 @@ content-type: application/json
     "title": "Marina Aisa UX engineer",
     "author": "Marina Aisa",
     "url": "https://marinaaisa.com/blog",
-    "likes": 3
+    "likes": 3,
+    "user": "606b5fecec60811d40e7ecab"
 }
 ###
 POST http://localhost:3003/api/blogs
@@ -32,7 +34,8 @@ content-type: application/json
     "title": "Blog JakeArchibald.com",
     "author": "Jake Archibald",
     "url": "https://jakearchibald.com/",
-    "likes": 10
+    "likes": 10,
+    "user": "606b5fecec60811d40e7ecab"
 }
 ###
 POST http://localhost:3003/api/users

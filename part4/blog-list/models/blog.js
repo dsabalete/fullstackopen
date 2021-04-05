@@ -1,12 +1,12 @@
-const mongoose = require('mongoose')
+const { Schema, model } = require('mongoose')
 
-const blogSchema = new mongoose.Schema({
+const blogSchema = new Schema({
   title: { type: String, required: true, minlength: 5 },
   author: String,
   url: { type: String, required: true, minlength: 8 },
   likes: { type: Number, default: 0 },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }
 })
@@ -19,4 +19,4 @@ blogSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Blog', blogSchema)
+module.exports = model('Blog', blogSchema)
