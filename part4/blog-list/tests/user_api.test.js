@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const bcrypt = require('bcrypt')
 const { usersInDb, initialUsers } = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
-
+const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
 describe('when there is initially one user in DB', () => {
@@ -15,6 +14,19 @@ describe('when there is initially one user in DB', () => {
     const user = new User({ username: 'root', name: 'da Root', passwordHash })
 
     await user.save()
+  })
+
+  test('login success', async () => {
+    const userPass = {
+      username: 'root',
+      password: 'sekret'
+    }
+
+    await api
+      .post('/api/login')
+      .send(userPass)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
 
   test('creation succeeds with a fresh username', async () => {
