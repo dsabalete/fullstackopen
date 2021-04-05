@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const bcrypt = require('bcrypt')
-const helper = require('./test_helper')
+const { usersInDb, initialUsers } = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
@@ -18,8 +18,7 @@ describe('when there is initially one user in DB', () => {
   })
 
   test('creation succeeds with a fresh username', async () => {
-    const usersAtStart = await helper.usersInDb()
-    // console.log(usersAtStart)
+    const usersAtStart = await usersInDb()
 
     const newUser = {
       username: 'mluukkai',
@@ -30,10 +29,10 @@ describe('when there is initially one user in DB', () => {
     await api
       .post('/api/users')
       .send(newUser)
-      .expect(200)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const usersAtEnd = await helper.usersInDb()
+    const usersAtEnd = await usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
     const usernames = usersAtEnd.map((u) => u.username)
@@ -41,7 +40,7 @@ describe('when there is initially one user in DB', () => {
   })
 
   test('creation fails with proper statuscode and message if username already taken', async () => {
-    const usersAtStart = await helper.usersInDb()
+    const usersAtStart = await usersInDb()
 
     const newUser = {
       username: 'root',
@@ -57,7 +56,7 @@ describe('when there is initially one user in DB', () => {
 
     expect(result.body.error).toContain('`username` to be unique')
 
-    const usersAtEnd = await helper.usersInDb()
+    const usersAtEnd = await usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 })
@@ -65,7 +64,7 @@ describe('when there is initially one user in DB', () => {
 describe('when there are some users in DB', () => {
   beforeEach(async () => {
     await User.deleteMany({})
-    await User.insertMany(helper.initialUsers)
+    await User.insertMany(initialUsers)
   })
 
   test('users are returned as json', async () => {
@@ -78,7 +77,7 @@ describe('when there are some users in DB', () => {
   test('all users are returned', async () => {
     const response = await api.get('/api/users')
 
-    expect(response.body).toHaveLength(helper.initialUsers.length)
+    expect(response.body).toHaveLength(initialUsers.length)
   })
 })
 
@@ -126,14 +125,14 @@ describe('creating users', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(JSON.parse(response.error.text).error).toBe(
-      'password missing or invalid'
-    )
+    expect(JSON.parse(response.error.text)).toEqual({
+      error: 'password missing or invalid'
+    })
   })
 
   test('creation request with not unique username gives an error', async () => {
     await User.deleteMany({})
-    await User.insertMany(helper.initialUsers)
+    await User.insertMany(initialUsers)
 
     const newUser = {
       username: 'root',
@@ -147,9 +146,10 @@ describe('creating users', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(JSON.parse(response.error.text).error).toBe(
-      'User validation failed: username: Error, expected `username` to be unique. Value: `root`'
-    )
+    expect(JSON.parse(response.error.text)).toEqual({
+      error:
+        'User validation failed: username: Error, expected `username` to be unique. Value: `root`'
+    })
   })
 })
 

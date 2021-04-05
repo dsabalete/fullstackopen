@@ -10,7 +10,7 @@
     "deploy": "git push heroku HEAD:master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
-    "test": "cross-env NODE_ENV=test PORT=3002 jest --verbose --runInBand --watchAll tests/blog_api.test.js",
+    "test": "cross-env NODE_ENV=test PORT=3002 jest --verbose --runInBand --watchAll tests/user_api.test.js",
     "lint": "eslint ."
   },
   "author": "David Sabalete",
