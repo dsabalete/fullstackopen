@@ -1,14 +1,14 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const { initialBlogs, blogsInDb, nonExistingId } = require('./test_helper')
 
 const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await Blog.insertMany(initialBlogs)
 })
 
 describe('when there are initially some blogs saved', () => {
@@ -22,7 +22,7 @@ describe('when there are initially some blogs saved', () => {
   test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
 
-    expect(response.body).toHaveLength(helper.initialBlogs.length)
+    expect(response.body).toHaveLength(initialBlogs.length)
   })
 
   test('unique identifier property of a post is named id', async () => {
@@ -47,8 +47,8 @@ describe('addition of a blog', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    const blogsAtEnd = await blogsInDb()
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length + 1)
 
     const titles = blogsAtEnd.map((n) => n.title)
     expect(titles).toContain('My Blog')
@@ -79,21 +79,21 @@ describe('addition of a blog', () => {
 
     await api.post('/api/blogs').send(blogIncomplete).expect(400)
 
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    const blogsAtEnd = await blogsInDb()
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length)
   })
 })
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
+    const blogsAtStart = await blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
-    const blogsAtEnd = await helper.blogsInDb()
+    const blogsAtEnd = await blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1)
 
     const titles = blogsAtEnd.map((r) => r.title)
 
@@ -103,7 +103,7 @@ describe('deletion of a blog', () => {
 
 describe('modification of a specific blog', () => {
   test('succeeds with valid data', async () => {
-    const blogsAtStart = await helper.blogsInDb()
+    const blogsAtStart = await blogsInDb()
     const blogToUpdate = blogsAtStart[0]
 
     blogToUpdate.likes++
@@ -115,7 +115,7 @@ describe('modification of a specific blog', () => {
   })
 
   test('fails with a non existing id', async () => {
-    const id = helper.nonExistingId()
+    const id = nonExistingId()
 
     const blogToUpdate = {
       id,
