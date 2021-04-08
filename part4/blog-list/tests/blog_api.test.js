@@ -55,13 +55,15 @@ describe('addition of a blog', () => {
     await Blog.insertMany(initialBlogs)
   })
 
-  test('an HTTP POST request to the API successfully creates a new blog post', async () => {
+  test('a user logged in successfully creates a new blog post', async () => {
     const newBlog = {
       title: 'My Blog',
       author: 'David Sabalete',
       url: 'https://blog.davidsabalete.com',
       likes: 0
     }
+
+    expect(token).toBeDefined()
 
     await api
       .post('/api/blogs')
@@ -95,7 +97,7 @@ describe('addition of a blog', () => {
     expect(response.body.likes).toBe(0)
   })
 
-  test('an HTTP POST request with missing fields returns a 409 CONFLICT response', async () => {
+  test('fails with 409 CONFLICT for request with missing fields', async () => {
     const blogIncomplete = {
       author: 'David Sabalete',
       likes: 0
@@ -109,6 +111,27 @@ describe('addition of a blog', () => {
 
     const blogsAtEnd = await blogsInDb()
     expect(blogsAtEnd).toHaveLength(initialBlogs.length)
+  })
+
+  test('fails with 401 Unauthorized for request without token', async () => {
+    const newBlog = {
+      title: 'My Blog',
+      author: 'David Sabalete',
+      url: 'https://blog.davidsabalete.com',
+      likes: 0
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await blogsInDb()
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length)
+
+    const titles = blogsAtEnd.map((n) => n.title)
+    expect(titles).not.toContain(newBlog.title)
   })
 })
 
