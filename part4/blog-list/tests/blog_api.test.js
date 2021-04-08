@@ -95,7 +95,7 @@ describe('addition of a blog', () => {
     expect(response.body.likes).toBe(0)
   })
 
-  test('an HTTP POST request with missing fields returns a 400 BAD REQUEST response', async () => {
+  test('an HTTP POST request with missing fields returns a 409 CONFLICT response', async () => {
     const blogIncomplete = {
       author: 'David Sabalete',
       likes: 0
@@ -105,7 +105,7 @@ describe('addition of a blog', () => {
       .post('/api/blogs')
       .set('Authorization', 'Bearer ' + token)
       .send(blogIncomplete)
-      .expect(400)
+      .expect(409)
 
     const blogsAtEnd = await blogsInDb()
     expect(blogsAtEnd).toHaveLength(initialBlogs.length)
@@ -113,19 +113,79 @@ describe('addition of a blog', () => {
 })
 
 describe('deletion of a blog', () => {
+  let token = ''
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
+
+    const loginPass = {
+      username: 'root',
+      password: 'sekret'
+    }
+    const response = await api.post('/api/login').send(loginPass)
+    token = response.body.token
+
+    await Blog.insertMany(initialBlogs)
+  })
+
   test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await blogsInDb()
+    // const blogToDelete = blogsAtStart[0]
+
+    expect(token).toBeDefined()
+
+    const newBlog = {
+      title: 'My Blog',
+      author: 'David Sabalete',
+      url: 'https://blog.davidsabalete.com',
+      likes: 0
+    }
+
+    const responseCreate = await api
+      .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + token)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogToDeleteId = responseCreate.body.id
+
+    const blogsAfterCreate = await blogsInDb()
+    expect(blogsAfterCreate).toHaveLength(initialBlogs.length + 1)
+
+    const blog = await Blog.findById(blogToDeleteId)
+
+    await api
+      .delete(`/api/blogs/${blog.id}`)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(204)
+
+    const blogsAtEnd = await blogsInDb()
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length)
+
+    const titles = blogsAtEnd.map((r) => r.title)
+    expect(titles).not.toContain(newBlog.title)
+  })
+
+  test('fails if blog was created by another user', async () => {
     const blogsAtStart = await blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    expect(token).toBeDefined()
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(401)
 
     const blogsAtEnd = await blogsInDb()
-
-    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1)
-
-    const titles = blogsAtEnd.map((r) => r.title)
-
-    expect(titles).not.toContain(blogToDelete.title)
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length)
   })
 })
 
