@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import noteService from './services/notes'
 import loginService from './services/login'
 import Note from './components/Note'
+import NoteForm from './components/NoteForm'
+import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 
@@ -86,37 +88,6 @@ const App = () => {
         }
     }
 
-    const loginForm = () => (
-        <form onSubmit={handleLogin}>
-            <div>
-                username
-                <input
-                    type='text'
-                    value={username}
-                    name='Username'
-                    onChange={({ target }) => setUsername(target.value)}
-                />
-            </div>
-            <div>
-                password
-                <input
-                    type='password'
-                    value={password}
-                    name='Password'
-                    onChange={({ target }) => setPassword(target.value)}
-                />
-            </div>
-            <button type='submit'>login</button>
-        </form>
-    )
-
-    const noteForm = () => (
-        <form onSubmit={addNote}>
-            <input value={newNote} onChange={handleNoteChange} />
-            <button type='submit'>save</button>
-        </form>
-    )
-
     return (
         <div>
             <h1>Notes</h1>
@@ -124,11 +95,21 @@ const App = () => {
             <Notification message={errorMessage} />
 
             {user === null ? (
-                loginForm()
+                <LoginForm
+                    onSubmit={handleLogin}
+                    username={username}
+                    password={password}
+                    setUsername={setUsername}
+                    setPassword={setPassword}
+                />
             ) : (
                 <div>
                     <p>{user.name} logged-in</p>
-                    {noteForm()}
+                    <NoteForm
+                        onSubmit={addNote}
+                        note={newNote}
+                        onChange={handleNoteChange}
+                    />
                 </div>
             )}
 
