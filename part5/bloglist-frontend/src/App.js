@@ -5,10 +5,12 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import './App.css'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [errorMessage, setErrorMessage] = useState(null)
+    const [message, setMessage] = useState(null)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
@@ -44,7 +46,7 @@ const App = () => {
             setUsername('')
             setPassword('')
         } catch (exception) {
-            setErrorMessage('Wrong credentials')
+            setErrorMessage('Wrong username or password')
             setUser(null)
             setTimeout(() => {
                 setErrorMessage(null)
@@ -68,6 +70,10 @@ const App = () => {
         }
 
         blogService.create(blog).then((blog) => {
+            setMessage(`A new blog "${blog.title}" by ${blog.author} added`)
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
             setBlogs(blogs.concat(blog))
             setTitle('')
             setAuthor('')
@@ -79,6 +85,7 @@ const App = () => {
         return (
             <div>
                 <h2>Log into the Blog-list app</h2>
+                <Notification message={errorMessage} type='error' />
                 <LoginForm
                     onSubmit={handleLogin}
                     username={username}
@@ -99,7 +106,7 @@ const App = () => {
                 <button onClick={handleLogout}>log out</button>
             </p>
 
-            <Notification message={errorMessage} />
+            <Notification message={message} type='info' />
 
             <h2>create new</h2>
 
