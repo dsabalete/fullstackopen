@@ -22,6 +22,15 @@ const App = () => {
         })
     }, [])
 
+    useEffect(() => {
+        const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+        if (loggedUserJSON) {
+            const user = JSON.parse(loggedUserJSON)
+            setUser(user)
+            noteService.setToken(user.token)
+        }
+    }, [])
+
     const toggleImportanceOf = (id) => {
         const note = notes.find((n) => n.id === id)
         const changedNote = { ...note, important: !note.important }
@@ -88,6 +97,13 @@ const App = () => {
         }
     }
 
+    const handleLogout = (event) => {
+        event.preventDefault()
+        window.localStorage.removeItem('loggedNoteappUser')
+        setUser(null)
+        // window.localStorage.clear()
+    }
+
     return (
         <div>
             <h1>Notes</h1>
@@ -104,7 +120,10 @@ const App = () => {
                 />
             ) : (
                 <div>
-                    <p>{user.name} logged-in</p>
+                    <p>
+                        {user.name} logged-in{' '}
+                        <button onClick={handleLogout}>log out</button>
+                    </p>
                     <NoteForm
                         onSubmit={addNote}
                         note={newNote}
