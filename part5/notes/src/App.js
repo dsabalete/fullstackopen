@@ -69,6 +69,10 @@ const App = () => {
         try {
             const user = await loginService.login({ username, password })
 
+            window.localStorage.setItem(
+                'loggedNoteappUser',
+                JSON.stringify(user)
+            )
             noteService.setToken(user.token)
             setUser(user)
             setUsername('')
@@ -145,11 +149,6 @@ const App = () => {
                     )
                 })}
             </ul>
-
-            <form onSubmit={addNote}>
-                <input value={newNote} onChange={handleNoteChange} />
-                <button type='submit'>save</button>
-            </form>
 
             <Footer />
         </div>
