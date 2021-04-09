@@ -1,0 +1,17 @@
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Superuser",
+    "password": "sekret"
+}
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "mluukkai",
+    "name": "Matti Lukkainen",
+    "password": "opensesame"
+}
