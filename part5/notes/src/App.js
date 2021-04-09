@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { getAll, create, update } from './services/notes'
+import noteService from './services/notes'
+import loginService from './services/login'
 import Note from './components/Note'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
@@ -11,9 +12,10 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState(null)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [user, setUser] = useState(null)
 
     useEffect(() => {
-        getAll().then((response) => {
+        noteService.getAll().then((response) => {
             setNotes(response)
         })
     }, [])
@@ -22,7 +24,8 @@ const App = () => {
         const note = notes.find((n) => n.id === id)
         const changedNote = { ...note, important: !note.important }
 
-        update(id, changedNote)
+        noteService
+            .update(id, changedNote)
             .then(() => {
                 setNotes(
                     notes.map((note) => (note.id !== id ? note : changedNote))
@@ -48,7 +51,7 @@ const App = () => {
             important: Math.random() < 0.5
         }
 
-        create(noteObject).then((returnedNote) => {
+        noteService.create(noteObject).then((returnedNote) => {
             setNotes(notes.concat(returnedNote))
             setNewNote('')
         })
@@ -60,10 +63,55 @@ const App = () => {
 
     const notesToShow = showAll ? notes : notes.filter((note) => note.important)
 
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         event.preventDefault()
-        console.log('logging in with', username, password)
+
+        try {
+            const user = await loginService.login({ username, password })
+
+            noteService.setToken(user.token)
+            setUser(user)
+            setUsername('')
+            setPassword('')
+        } catch (exception) {
+            setErrorMessage('Wrong credentials')
+            setUser(null)
+            setTimeout(() => {
+                setErrorMessage(null)
+            }, 5000)
+        }
     }
+
+    const loginForm = () => (
+        <form onSubmit={handleLogin}>
+            <div>
+                username
+                <input
+                    type='text'
+                    value={username}
+                    name='Username'
+                    onChange={({ target }) => setUsername(target.value)}
+                />
+            </div>
+            <div>
+                password
+                <input
+                    type='password'
+                    value={password}
+                    name='Password'
+                    onChange={({ target }) => setPassword(target.value)}
+                />
+            </div>
+            <button type='submit'>login</button>
+        </form>
+    )
+
+    const noteForm = () => (
+        <form onSubmit={addNote}>
+            <input value={newNote} onChange={handleNoteChange} />
+            <button type='submit'>save</button>
+        </form>
+    )
 
     return (
         <div>
@@ -71,27 +119,14 @@ const App = () => {
 
             <Notification message={errorMessage} />
 
-            <form onSubmit={handleLogin}>
+            {user === null ? (
+                loginForm()
+            ) : (
                 <div>
-                    username
-                    <input
-                        type='text'
-                        value={username}
-                        name='Username'
-                        onChange={({ target }) => setUsername(target.value)}
-                    />
+                    <p>{user.name} logged-in</p>
+                    {noteForm()}
                 </div>
-                <div>
-                    password
-                    <input
-                        type='password'
-                        value={password}
-                        name='Password'
-                        onChange={({ target }) => setPassword(target.value)}
-                    />
-                </div>
-                <button type='submit'>login</button>
-            </form>
+            )}
 
             <div>
                 <button onClick={() => setShowAll(!showAll)}>
