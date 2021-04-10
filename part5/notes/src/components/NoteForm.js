@@ -1,11 +1,15 @@
 import React from 'react'
 
-const NoteForm = ({ onSubmit, note, onChange }) => {
+const NoteForm = ({ onSubmit, handleChange, value }) => {
     return (
-        <form onSubmit={onSubmit}>
-            <input value={note} onChange={onChange} />
-            <button type='submit'>save</button>
-        </form>
+        <div>
+            <h2>Create a new note</h2>
+
+            <form onSubmit={onSubmit}>
+                <input value={value} onChange={handleChange} />
+                <button type='submit'>save</button>
+            </form>
+        </div>
     )
 }
 
