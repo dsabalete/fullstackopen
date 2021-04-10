@@ -15,6 +15,7 @@ const App = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
+    const [loginVisible, setLoginVisible] = useState(false)
 
     useEffect(() => {
         noteService.getAll().then((response) => {
@@ -104,6 +105,37 @@ const App = () => {
         // window.localStorage.clear()
     }
 
+    const loginForm = () => {
+        const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+        const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+        return (
+            <div>
+                <div style={hideWhenVisible}>
+                    <button onClick={() => setLoginVisible(true)}>
+                        log in
+                    </button>
+                </div>
+                <div style={showWhenVisible}>
+                    <LoginForm
+                        username={username}
+                        password={password}
+                        handleUsernameChange={({ target }) =>
+                            setUsername(target.value)
+                        }
+                        handlePasswordChange={({ target }) =>
+                            setPassword(target.value)
+                        }
+                        handleSubmit={handleLogin}
+                    />
+                    <button onClick={() => setLoginVisible(false)}>
+                        cancel
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div>
             <h1>Notes</h1>
@@ -111,13 +143,7 @@ const App = () => {
             <Notification message={errorMessage} />
 
             {user === null ? (
-                <LoginForm
-                    onSubmit={handleLogin}
-                    username={username}
-                    password={password}
-                    setUsername={setUsername}
-                    setPassword={setPassword}
-                />
+                loginForm()
             ) : (
                 <div>
                     <p>
