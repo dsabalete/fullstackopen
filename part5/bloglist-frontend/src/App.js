@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import './App.css'
 
@@ -14,9 +15,8 @@ const App = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+
+    const blogFormRef = useRef()
 
     useEffect(() => {
         blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -60,24 +60,14 @@ const App = () => {
         setUser(null)
     }
 
-    const addBlog = (event) => {
-        event.preventDefault()
-
-        const blog = {
-            title,
-            author,
-            url
-        }
-
+    const handleAddBlog = (blog) => {
+        blogFormRef.current.toggleVisibility()
         blogService.create(blog).then((blog) => {
             setMessage(`A new blog "${blog.title}" by ${blog.author} added`)
             setTimeout(() => {
                 setMessage(null)
             }, 5000)
             setBlogs(blogs.concat(blog))
-            setTitle('')
-            setAuthor('')
-            setUrl('')
         })
     }
 
@@ -108,17 +98,9 @@ const App = () => {
 
             <Notification message={message} type='info' />
 
-            <h2>create new</h2>
-
-            <BlogForm
-                onSubmit={addBlog}
-                title={title}
-                setTitle={setTitle}
-                author={author}
-                setAuthor={setAuthor}
-                url={url}
-                setUrl={setUrl}
-            />
+            <Togglable buttonLabel='new note' ref={blogFormRef}>
+                <BlogForm addBlog={handleAddBlog} />
+            </Togglable>
 
             <br />
 
