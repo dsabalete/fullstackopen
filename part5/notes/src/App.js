@@ -61,7 +61,7 @@ const App = () => {
 
     const notesToShow = showAll ? notes : notes.filter((note) => note.important)
 
-    const handleLogin = async ({username, password}) => {
+    const handleLogin = async ({ username, password }) => {
         try {
             const user = await loginService.login({
                 username,
@@ -85,9 +85,7 @@ const App = () => {
 
     const loginForm = () => (
         <Togglable buttonLabel='log in'>
-            <LoginForm
-                handleSubmit={handleLogin}
-            />
+            <LoginForm handleSubmit={handleLogin} />
         </Togglable>
     )
 
