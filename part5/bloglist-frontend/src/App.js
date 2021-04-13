@@ -98,7 +98,7 @@ const App = () => {
 
             <Notification message={message} type='info' />
 
-            <Togglable buttonLabel='new note' ref={blogFormRef}>
+            <Togglable buttonLabel='create new blog' ref={blogFormRef}>
                 <BlogForm addBlog={handleAddBlog} />
             </Togglable>
 
