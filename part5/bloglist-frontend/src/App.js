@@ -71,6 +71,23 @@ const App = () => {
         })
     }
 
+    const handleLikeBlog = (blog) => {
+        const blogChanged = { ...blog, likes: blog.likes + 1 }
+        blogService.update(blogChanged.id, blogChanged).then((blogReturned) => {
+            setMessage(
+                `Blog "${blogReturned.title}" by ${blogReturned.author} updated`
+            )
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+            setBlogs(
+                blogs.map((blog) =>
+                    blog.id !== blogChanged.id ? blog : blogReturned
+                )
+            )
+        })
+    }
+
     if (user === null) {
         return (
             <div>
@@ -105,7 +122,7 @@ const App = () => {
             <br />
 
             {blogs.map((blog) => (
-                <Blog key={blog.id} blog={blog} />
+                <Blog key={blog.id} blog={blog} likeBlog={handleLikeBlog} />
             ))}
         </div>
     )

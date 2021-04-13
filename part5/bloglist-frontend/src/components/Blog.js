@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
     const [detailsVisible, setDetailsVisible] = useState(false)
 
     const showDetails = () => {
@@ -16,6 +16,10 @@ const Blog = ({ blog }) => {
         marginBottom: 5
     }
 
+    const handleClickLike = () => {
+        likeBlog(blog)
+    }
+
     return (
         <div style={blogStyle}>
             <div>
@@ -27,7 +31,8 @@ const Blog = ({ blog }) => {
                 <div>
                     <div>{blog.url}</div>
                     <div>
-                        likes {blog.likes} <button>like</button>
+                        likes {blog.likes}{' '}
+                        <button onClick={handleClickLike}>like</button>
                     </div>
                     <div>{blog.user.name}</div>
                 </div>
