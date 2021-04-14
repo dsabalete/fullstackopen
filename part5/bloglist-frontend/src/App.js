@@ -97,9 +97,15 @@ const App = () => {
                 setTimeout(() => {
                     setMessage(null)
                 }, 5000)
+                const blogLiked = {
+                    ...blogReturned,
+                    user: {
+                        id: blogReturned.user
+                    }
+                }
                 setBlogs(
                     blogs.map((blog) =>
-                        blog.id !== blogChanged.id ? blog : blogReturned
+                        blog.id !== blogChanged.id ? blog : blogLiked
                     )
                 )
             })
