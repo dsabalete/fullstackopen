@@ -12,8 +12,6 @@ const App = () => {
     const [blogs, setBlogs] = useState([])
     const [errorMessage, setErrorMessage] = useState(null)
     const [message, setMessage] = useState(null)
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
 
     const blogFormRef = useRef()
@@ -31,9 +29,7 @@ const App = () => {
         }
     }, [])
 
-    const handleLogin = async (event) => {
-        event.preventDefault()
-
+    const handleLogin = async ({ username, password }) => {
         try {
             const user = await loginService.login({ username, password })
 
@@ -43,8 +39,6 @@ const App = () => {
             )
             blogService.setToken(user.token)
             setUser(user)
-            setUsername('')
-            setPassword('')
         } catch (exception) {
             setErrorMessage('Wrong username or password')
             setUser(null)
@@ -142,13 +136,7 @@ const App = () => {
             <div>
                 <h2>Log into the Blog-list app</h2>
                 <Notification message={errorMessage} type='error' />
-                <LoginForm
-                    onSubmit={handleLogin}
-                    username={username}
-                    password={password}
-                    setUsername={setUsername}
-                    setPassword={setPassword}
-                />
+                <LoginForm handleSubmit={handleLogin} />
             </div>
         )
     }
