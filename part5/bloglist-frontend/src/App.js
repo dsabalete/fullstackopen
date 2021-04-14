@@ -62,19 +62,34 @@ const App = () => {
 
     const handleAddBlog = (blog) => {
         blogFormRef.current.toggleVisibility()
-        blogService.create(blog).then((blog) => {
-            setMessage(`A new blog "${blog.title}" by ${blog.author} added`)
-            setTimeout(() => {
-                setMessage(null)
-            }, 5000)
-            setBlogs(blogs.concat(blog))
-        })
+        blogService
+            .create(blog)
+            .then((blog) => {
+                setMessage(`A new blog "${blog.title}" by ${blog.author} added`)
+                setTimeout(() => {
+                    setMessage(null)
+                }, 5000)
+                const blogCreated = {
+                    ...blog,
+                    user: {
+                        id: blog.user
+                    }
+                }
+                setBlogs(blogs.concat(blogCreated))
+            })
+            .catch((error) => {
+                const msg = error.response.data.error
+                setErrorMessage(msg)
+                setTimeout(() => {
+                    setErrorMessage(null)
+                }, 5000)
+            })
     }
 
     const handleLikeBlog = (blog) => {
         const blogChanged = { ...blog, likes: blog.likes + 1 }
         blogService
-            .update(blogChanged.id, blogChanged)
+            .update(blog.id, blogChanged)
             .then((blogReturned) => {
                 setMessage(
                     `Blog "${blogReturned.title}" by ${blogReturned.author} updated`
@@ -90,12 +105,30 @@ const App = () => {
             })
             .catch((error) => {
                 setErrorMessage(
-                    `Blog '${blog.title}' was already removed from server`
+                    `Blog "${blog.title}" was already removed from server`
                 )
                 setTimeout(() => {
                     setMessage(null)
                 }, 5000)
             })
+    }
+
+    const handleRemoveBlog = (blog) => {
+        if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
+            blogService
+                .remove(blog.id)
+                .then((response) => {
+                    setBlogs(blogs.filter((b) => b.id !== blog.id))
+                })
+                .catch((error) => {
+                    setErrorMessage(
+                        `Blog '${blog.title}' was already removed from server`
+                    )
+                    setTimeout(() => {
+                        setMessage(null)
+                    }, 5000)
+                })
+        }
     }
 
     if (user === null) {
@@ -124,6 +157,7 @@ const App = () => {
             </p>
 
             <Notification message={message} type='info' />
+            <Notification message={errorMessage} type='error' />
 
             <Togglable buttonLabel='create new blog' ref={blogFormRef}>
                 <BlogForm addBlog={handleAddBlog} />
@@ -134,7 +168,13 @@ const App = () => {
             {blogs
                 .sort((a, b) => b.likes - a.likes)
                 .map((blog) => (
-                    <Blog key={blog.id} blog={blog} likeBlog={handleLikeBlog} />
+                    <Blog
+                        key={blog.id}
+                        blog={blog}
+                        likeBlog={handleLikeBlog}
+                        removeBlog={handleRemoveBlog}
+                        user={user.id}
+                    />
                 ))}
         </div>
     )
