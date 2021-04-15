@@ -49,4 +49,17 @@ describe('Blog', () => {
     expect(div).toHaveTextContent(blog.url)
     expect(div).toHaveTextContent(blog.likes)
   })
+
+  test('if the like button is clicked twice, the event handler the component received as props is called twice.', () => {
+    const button = component.getByText('view')
+    fireEvent.click(button)
+
+    const likeButton = component.getByText('like')
+    expect(likeButton).toBeDefined()
+
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+    expect(likeBlog.mock.calls).toHaveLength(2)
+  })
 })
