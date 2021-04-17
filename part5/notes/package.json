@@ -18,6 +18,7 @@
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json",
     "cypress:open": "cypress open",
+    "test:e2e": "cypress run",
     "eslint": "eslint ."
   },
   "proxy": "http://localhost:3001",
