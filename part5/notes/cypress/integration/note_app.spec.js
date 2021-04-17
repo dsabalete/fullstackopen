@@ -47,12 +47,12 @@ describe('Note app', function () {
         cy.contains('new note').click()
         cy.get('input').type('another note cypress')
         cy.contains('save').click()
+        cy.contains('show all').click()
       })
 
-      it('it can be made important', async function () {
+      it('it can be made important', function () {
         cy.contains('another note cypress').contains('make important').click()
-
-        await cy.contains('another note cypress').contains('make not important')
+        cy.contains('another note cypress').contains('make not important')
       })
     })
   })
