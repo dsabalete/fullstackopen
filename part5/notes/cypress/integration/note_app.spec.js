@@ -10,36 +10,50 @@ describe('Note app', function () {
     cy.visit('http://localhost:3000')
   })
 
-  describe('before log in', () => {
-    it('front page can be opened', function () {
-      cy.contains('Notes')
-      cy.contains(
-        'Note app, Department of Computer Science, University of Helsinki 2021'
-      )
-    })
+  it('front page can be opened', function () {
+    cy.contains('Notes')
+    cy.contains(
+      'Note app, Department of Computer Science, University of Helsinki 2021'
+    )
+  })
 
-    it('login form can be opened', function () {
-      cy.contains('log in').click()
-    })
+  it('login form can be opened', function () {
+    cy.contains('log in').click()
+    cy.get('#username').type('mluukkai')
+    cy.get('#password').type('salainen')
+    cy.get('#login-button').click()
+
+    cy.contains('Matti Luukkainen logged in')
   })
 
   describe('when logged in', function () {
     beforeEach(function () {
       cy.contains('log in').click()
-      cy.get('#username').type('mluukkai')
-      cy.get('#password').type('salainen')
+      cy.get('input:first').type('mluukkai')
+      cy.get('input:last').type('salainen')
       cy.get('#login-button').click()
     })
 
-    it('user can log in', function () {
-      cy.contains('Matti Luukkainen logged in')
-    })
-
-    it('a new note can be created', function () {
+    it('a new note can be created', async function () {
       cy.contains('new note').click()
       cy.get('input').type('a note created by cypress')
       cy.contains('save').click()
-      cy.contains('a note created by cypress')
+
+      await cy.contains('a note created by cypress')
+    })
+
+    describe('and a note exists', function () {
+      beforeEach(function () {
+        cy.contains('new note').click()
+        cy.get('input').type('another note cypress')
+        cy.contains('save').click()
+      })
+
+      it('it can be made important', async function () {
+        cy.contains('another note cypress').contains('make important').click()
+
+        await cy.contains('another note cypress').contains('make not important')
+      })
     })
   })
 })
