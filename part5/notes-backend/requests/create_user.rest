@@ -12,6 +12,6 @@ Content-Type: application/json
 
 {
     "username": "mluukkai",
-    "name": "Matti Lukkainen",
+    "name": "Matti Luukkainen",
     "password": "opensesame"
 }
