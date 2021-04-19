@@ -1,0 +1,16 @@
+PUT http://localhost:3003/api/blogs/604a9050914df49bbd9fe09d
+content-type: application/json
+
+{
+    "likes": 7,
+    "title": "David's blog",
+    "author": "David Sabalete",
+    "url": "https://blog.davidsabalete.com/"
+}
+###
+PUT http://localhost:3003/api/blogs/604a9050914df49bbd9fe09d
+content-type: application/json
+
+{
+    "likes": 10
+}

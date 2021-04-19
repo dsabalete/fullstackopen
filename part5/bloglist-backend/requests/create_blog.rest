@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwNmI1ZmVjZWM2MDgxMWQ0MGU3ZWNhYiIsImlhdCI6MTYxNzkxNTczMH0.hgLwwls0VHxHECuUSXYFLk_79lwGaX8ahN7C6EhnKeg
+content-type: application/json
+
+{
+    "title": "A another blog ready to be deleted",
+    "author": "Misterious man",
+    "url": "https://inigomontoya/blog",
+    "likes": 3,
+    "user": "606b5fecec60811d40e7ecab"
+}
