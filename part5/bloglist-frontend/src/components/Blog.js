@@ -37,7 +37,10 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
         <div>
           <div>{blog.url}</div>
           <div>
-            likes {blog.likes} <button onClick={handleClickLike}>like</button>
+            likes {blog.likes}{' '}
+            <button data-test-id="like-button" onClick={handleClickLike}>
+              like
+            </button>
           </div>
           <div>{blog.user.name}</div>
           {blog.user.id === user && (
