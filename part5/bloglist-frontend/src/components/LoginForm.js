@@ -13,7 +13,7 @@ const LoginForm = ({ handleSubmit }) => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <form data-test-id="login-form" onSubmit={onSubmit}>
       <div>
         username
         <input
