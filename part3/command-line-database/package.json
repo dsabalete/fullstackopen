@@ -9,6 +9,6 @@
   "author": "David Sabalete",
   "license": "MIT",
   "dependencies": {
-    "mongoose": "^5.11.19"
+    "mongoose": "^7.4.0"
   }
 }
