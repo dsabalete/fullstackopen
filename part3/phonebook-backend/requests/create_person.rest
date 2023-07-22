@@ -13,3 +13,11 @@ content-type: application/json
     "name": "fu",
     "number": "34234"
 }
+###
+POST https://damp-sea-1171.fly.dev/api/persons
+content-type: application/json
+
+{
+    "name": "fu",
+    "number": "34234"
+}
