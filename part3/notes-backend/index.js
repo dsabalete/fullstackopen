@@ -1,30 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const mongoose = require('mongoose')
-
-// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
-// const password = process.env.MONGODB_PASSWORD
-const password = 'wnZ4o7a0BXmlxAna'
-const url = `mongodb+srv://fullstack:${password}@cluster0.crmstwc.mongodb.net/noteApp?retryWrites=true&w=majority`
-
-mongoose.set('strictQuery', false)
-mongoose.connect(url)
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean
-})
-
-noteSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
-const Note = mongoose.model('Note', noteSchema)
+const Note = require('./models/note')
 
 let notes = [
   {
@@ -81,10 +59,6 @@ app.post('/api/notes', (request, response) => {
   response.json(note)
 })
 
-// app.get('/api/notes', (req, res) => {
-//   res.json(notes)
-// })
-
 app.get('/api/notes', (request, response) => {
   Note.find({}).then((notes) => {
     response.json(notes)
@@ -109,7 +83,7 @@ app.get('/api/notes/:id', (request, response) => {
   }
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
