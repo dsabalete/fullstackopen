@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build:ui": "rm -rf build && cd ../notes-frontend && npm run build --prod && cp -r build ../notes-backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "build:ui": "rm -rf build && cd ../notes-frontend && yarn build && cp -r build ../notes-backend",
+    "deploy": "fly deploy",
+    "deploy:full": "yarn build:ui && yarn deploy",
+    "logs:prod": "fly logs"
   },
   "author": "David Sabalete",
   "dependencies": {
