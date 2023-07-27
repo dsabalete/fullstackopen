@@ -1,0 +1,23 @@
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Debbie O'Brian",
+    "number": "12-98756734"
+}
+### Invalid name
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "fu",
+    "number": "34234"
+}
+### Invalid number
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Chuck Norris",
+    "number": "12343-12"
+}

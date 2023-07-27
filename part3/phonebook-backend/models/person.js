@@ -16,16 +16,25 @@ mongoose
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const noteSchema = new mongoose.Schema({
-  content: {
+const personSchema = new mongoose.Schema({
+  name: {
     type: String,
-    minlength: 5,
+    minlength: 3,
     required: true
   },
-  important: Boolean
+  number: {
+    type: String,
+    minlength: 8,
+    required: true,
+    validate: {
+      validator: (v) => {
+        return /^\d{2,3}-\d{5,}$/.test(v)
+      }
+    }
+  }
 })
 
-noteSchema.set('toJSON', {
+personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -33,4 +42,4 @@ noteSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Note', noteSchema)
+module.exports = mongoose.model('Person', personSchema)

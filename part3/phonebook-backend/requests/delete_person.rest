@@ -1,0 +1,11 @@
+DELETE http://localhost:3001/api/persons/64c1c9366717eb897d0e7199
+###
+GET http://localhost:3001/api/persons
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Debbie O'Brian",
+    "number": "12-98756734"
+}
