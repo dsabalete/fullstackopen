@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
+
 const Person = require('./models/person')
 
 morgan.token('body', (req) => {
@@ -57,30 +58,6 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-// app.get('/info', (req, res) => {
-//   res.send(
-//     `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
-//   )
-// })
-
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find((person) => person.id === id)
-
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
-})
-
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter((person) => person.id !== id)
-
-  res.status(204).end()
-})
-
 app.post('/api/persons', (request, response) => {
   const { body } = request
 
@@ -100,17 +77,28 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
-  }
-  next(error)
-}
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.find((person) => person.id === id)
 
-app.use(errorHandler)
+  if (person) {
+    response.json(person)
+  } else {
+    response.status(404).end()
+  }
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const { id } = request.params
+  Person.findByIdAndRemove(id)
+    .then((result) => {
+      response.status(204).end()
+    })
+    .catch((error) => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
+    })
+})
 
 const PORT = process.env.PORT
 
