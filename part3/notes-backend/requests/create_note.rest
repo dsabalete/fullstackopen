@@ -5,3 +5,12 @@ content-type: application/json
     "content": "HMTL is super easy",
     "important": false
 }
+
+### POST invalid note
+POST http://localhost:3001/api/notes
+content-type: application/json
+
+{
+    "content": "lol",
+    "important": false
+}
