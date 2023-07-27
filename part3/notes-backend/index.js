@@ -72,9 +72,10 @@ app.get('/api/notes/:id', (request, response, next) => {
     .catch((error) => next(error))
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response, next) => {
   const { id } = request.params
   Note.findByIdAndRemove(id)
+    // eslint-disable-next-line no-unused-vars
     .then((result) => {
       response.status(204).end()
     })
