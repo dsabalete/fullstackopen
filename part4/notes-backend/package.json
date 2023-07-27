@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build:ui": "rm -rf build && cd ../../part3/notes-frontend && yarn build && cp -r build ../../part4/notes-backend",
+    "deploy": "fly deploy --ha=false",
+    "deploy:full": "yarn build:ui && yarn deploy",
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
+  },
+  "author": "David Sabalete",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.17.1",
+    "mongoose": "^7.4.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.3.3",
+    "eslint": "^8.45.0",
+    "nodemon": "^2.0.7"
+  }
+}
