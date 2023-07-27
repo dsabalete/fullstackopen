@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../phonebook-frontend && yarn build && cp -r build ../phonebook-backend",
-    "deploy": "fly deploy",
+    "deploy": "fly deploy --ha=false",
     "deploy:full": "yarn build:ui && yarn deploy",
     "logs:prod": "fly logs"
   },
