@@ -43,6 +43,16 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
+app.get('/info', (request, response) => {
+  Person.find({}).then((persons) => {
+    response.send(
+      `<p>Phonebook has info for ${
+        persons.length
+      } people</p><p>${new Date()}</p>`
+    )
+  })
+})
+
 app.get('/api/persons', (request, response) => {
   Person.find({}).then((persons) => {
     response.json(persons)
