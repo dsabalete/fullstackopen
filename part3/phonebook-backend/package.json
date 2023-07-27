@@ -9,7 +9,8 @@
     "build:ui": "rm -rf build && cd ../phonebook-frontend && yarn build && cp -r build ../phonebook-backend",
     "deploy": "fly deploy --ha=false",
     "deploy:full": "yarn build:ui && yarn deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "David Sabalete",
   "license": "MIT",
@@ -22,7 +23,7 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.3.3",
-    "eslint": "^7.21.0",
+    "eslint": "^8.45.0",
     "nodemon": "^2.0.7"
   }
 }
