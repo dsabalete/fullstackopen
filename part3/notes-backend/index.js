@@ -29,19 +29,6 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  }
-
-  next(error)
-}
-
-// this has to be the last loaded middleware.
-app.use(errorHandler)
-
 app.post('/api/notes', (request, response) => {
   const { body } = request
 
@@ -83,6 +70,25 @@ app.get('/api/notes/:id', (request, response, next) => {
     })
     .catch((error) => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+// this has to be the last loaded middleware.
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
