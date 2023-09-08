@@ -1,7 +1,7 @@
 {
-  "name": "backend",
+  "name": "notes-backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "Notes app - part 4",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
