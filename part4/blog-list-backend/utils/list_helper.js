@@ -16,8 +16,23 @@ const favoriteBlog = (blogs) => {
   return blogs.reduce(reducer, {})
 }
 
+const mostBlogs = (blogs) => {
+  const reducer = (most, item) => {
+    if (most[item.author]) {
+      most[item.author] += 1
+    } else {
+      most[item.author] = 1
+    }
+    return most
+  }
+  const most = blogs.reduce(reducer, {})
+  const author = Object.keys(most).reduce((a, b) => (most[a] > most[b] ? a : b))
+  return { author: author, blogs: most[author] }
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
