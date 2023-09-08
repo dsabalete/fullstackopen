@@ -1,0 +1,20 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Beginning Node.js",
+    "author": "Basarat Ali Syed",
+    "url": "https://edu.anarcho-copy.org/Programming%20Languages/Node/Beginning%20Nodejs.pdf",
+    "likes": 1000
+}
+
+### 
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Web Development with Node and Express",
+    "author": "Ethan Brown",
+    "url": "https://www.vanmeegern.de/fileadmin/user_upload/PDF/Web_Development_with_Node_Express.pdf",
+    "likes": 950
+}
