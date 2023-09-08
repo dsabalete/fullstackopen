@@ -1,4 +1,5 @@
 const reverse = require('../utils/for_testing').reverse
+
 describe('reverse', () => {
   test('reverse of a', () => {
     const result = reverse('a')
