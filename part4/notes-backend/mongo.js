@@ -20,7 +20,8 @@ const noteSchema = new mongoose.Schema({
 const Note = mongoose.model('Note', noteSchema)
 
 // const note = new Note({
-//   content: 'JS is cool',
+//   content: 'Mongoose makes things easy',
+//   date: new Date(),
 //   important: true
 // })
 

@@ -4,17 +4,19 @@
   "description": "Notes app - part 4",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf build && cd ../../part3/notes-frontend && yarn build && cp -r build ../../part4/notes-backend",
     "deploy": "fly deploy --ha=false",
     "deploy:full": "yarn build:ui && yarn deploy",
     "logs:prod": "fly logs",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
   },
   "author": "David Sabalete",
   "dependencies": {
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.17.1",
     "mongoose": "^7.4.0"
